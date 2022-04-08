@@ -1,6 +1,9 @@
 #!/bin/bash
 
-rm -rf api-gateway
-git clone https://github.com/dinels12/api-gateway.git
-cd api-gateway && npm i && npm run proto:prepare && cd -
-# cd microservices/comments-svc && npm i && cd -
+echo "Starting installation"
+# Handle Api Gateway installation
+scripts/api-gateway.sh
+
+# Handle Microservices installation
+scripts/services.sh
+echo "Finished installation"

@@ -6,7 +6,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "install": "./scripts/install.sh"
+    "prepare": "./scripts/install.sh"
   },
   "keywords": [],
   "repository": {
