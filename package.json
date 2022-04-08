@@ -1,0 +1,22 @@
+{
+  "name": "grpc-nest-microservices",
+  "version": "1.0.0",
+  "description": "A full microservice using Docker, K8, and NestJS framework",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "install": "./scripts/install.sh"
+  },
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:dinels12/undefined.git"
+  },
+  "author": "Daniel Suarez <dinels12@gmail.com> (https://github.com/dinels12)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dinels12/undefined/issues"
+  },
+  "homepage": "https://github.com/dinels12/undefined#readme"
+}
