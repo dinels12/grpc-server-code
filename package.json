@@ -11,12 +11,12 @@
   "keywords": [],
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:dinels12/undefined.git"
+    "url": "git+ssh://git@github.com:dinels12/grpc-server-code.git"
   },
   "author": "Daniel Suarez <dinels12@gmail.com> (https://github.com/dinels12)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dinels12/undefined/issues"
+    "url": "https://github.com/dinels12/grpc-server-code/issues"
   },
-  "homepage": "https://github.com/dinels12/undefined#readme"
+  "homepage": "https://github.com/dinels12/grpc-server-code#readme"
 }
