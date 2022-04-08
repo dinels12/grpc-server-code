@@ -1,6 +1,5 @@
 #!/bin/bash
 
-echo "Starting installation"
 # Handle Protos installation
 scripts/protos.sh
 
@@ -9,4 +8,3 @@ scripts/api-gateway.sh
 
 # Handle Microservices installation
 scripts/services.sh
-echo "Finished installation"
