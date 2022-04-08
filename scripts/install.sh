@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Handle Protos installation
-scripts/protos.sh
+# scripts/protos.sh
 
 # Handle Api Gateway installation
-scripts/api-gateway.sh
+# scripts/api-gateway.sh
 
 # Handle Microservices installation
-scripts/services.sh
+# scripts/services.sh

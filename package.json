@@ -6,7 +6,14 @@
     "doc": "docs"
   },
   "scripts": {
-    "prepare": "./scripts/install.sh"
+    "docs:proto-gen": "./scripts/generate-proto-docs.sh",
+    "install": "./scripts/install.sh",
+    "lint": "./scripts/lint.sh",
+    "build": "./scripts/build.sh",
+    "docker:build": "docker-compose build",
+    "docker:start": "docker-compose up",
+    "docker:teardown": "docker-compose down",
+    "start": "npm run install && npm run build && npm run docker:build && npm run docker:start"
   },
   "keywords": [],
   "repository": {
