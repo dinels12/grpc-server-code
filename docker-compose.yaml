@@ -6,15 +6,18 @@ services:
     container_name: 'auth-svc'
     build:
       context: './microservices/auth-svc'
-    ports:
-      - '50051:50051'
-    # expose:
-    # - "50051"
+    # - 50051:50051
+    networks:
+      - backend
+    expose:
+      - 50051
+    # ports:
     environment:
       NODE_ENV: 'production'
       GRPC_HOST: '0.0.0.0'
       GRPC_PORT: '50051'
       DB_HOST: 'micro-auth'
+      DB_URL: 'mongodb+srv://admin:denialcode@cluster0.k21st.gcp.mongodb.net/micro-auth'
     # healthcheck:
     #   test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
     #   interval: 30s
@@ -22,63 +25,66 @@ services:
     #   retries: 5
     restart: 'on-failure'
 
-  # product-svc:
-  #   image: "product-svc:dev"
-  #   container_name: "product-svc"
-  #   build:
-  #     context: "./microservices/product-svc"
-  #   networks:
-  #     - "frontend"
-  #     - "backend"
-  #     - "productdomain"
-  #   expose:
-  #     - "50053"
-  #   environment:
-  #     NODE_ENV: "production"
-  #     GRPC_HOST: "0.0.0.0"
-  #     GRPC_PORT: "50053"
-  #     DB_HOST: "micro-product"
-  #   # healthcheck:
-  #   #   test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
-  #   #   interval: 30s
-  #   #   timeout: 10s
-  #   #   retries: 5
-  #   restart: "on-failure"
+  order-svc:
+    image: 'order-svc:dev'
+    container_name: 'order-svc'
+    build:
+      context: './microservices/order-svc'
+    networks:
+      - backend
+    expose:
+      - 50052
+    environment:
+      NODE_ENV: 'production'
+      GRPC_HOST: '0.0.0.0'
+      GRPC_PORT: '50052'
+      DB_HOST: 'micro-order'
+      DB_URL: 'mongodb+srv://admin:denialcode@cluster0.k21st.gcp.mongodb.net/micro-order'
+    # healthcheck:
+    #   test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 5
+    restart: 'on-failure'
 
-  # order-svc:
-  #   image: "order-svc:dev"
-  #   container_name: "order-svc"
-  #   build:
-  #     context: "./microservices/order-svc"
-  #   networks:
-  #     - "frontend"
-  #     - "backend"
-  #     - "orderdomain"
-  #   expose:
-  #     - "50052"
-  #   environment:
-  #     NODE_ENV: "production"
-  #     GRPC_HOST: "0.0.0.0"
-  #     GRPC_PORT: "50052"
-  #     DB_HOST: "micro-order"
-  #   # healthcheck:
-  #   #   test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
-  #   #   interval: 30s
-  #   #   timeout: 10s
-  #   #   retries: 5
-  #   restart: "on-failure"
+  product-svc:
+    image: 'product-svc:dev'
+    container_name: 'product-svc'
+    build:
+      context: './microservices/product-svc'
+    networks:
+      - backend
+    expose:
+      - 50053
+    environment:
+      NODE_ENV: 'production'
+      GRPC_HOST: '0.0.0.0'
+      GRPC_PORT: '50053'
+      DB_HOST: 'micro-product'
+      DB_URL: 'mongodb+srv://admin:denialcode@cluster0.k21st.gcp.mongodb.net/micro-product'
+    # healthcheck:
+    #   test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 5
+    restart: 'on-failure'
+
+  
 
   api-gateway:
     image: 'api-gateway:dev'
     container_name: 'api-gateway'
     build:
       context: './api-gateway'
+    networks:
+      - api-gateway
+      - backend
     ports:
-      - '3000:3000'
+      - 3000:3000
     depends_on:
       - 'auth-svc'
-      # - "order-svc"
-      # - "product-svc"
+      - 'order-svc'
+      - 'product-svc'
     environment:
       NODE_ENV: 'test'
       PORT: '3000'
@@ -96,9 +102,18 @@ services:
     #   timeout: 10s
     #   retries: 5
     restart: 'on-failure'
+
 # networks:
 #   frontend:
 #   backend:
 #   authdomain:
 #   productdomain:
 #   orderdomain:
+# networks:
+#   default:
+#     external:
+#       name: test
+
+networks:
+  api-gateway: {}
+  backend: {}
