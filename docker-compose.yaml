@@ -92,7 +92,7 @@ services:
       - 'product-svc'
       - 'order-svc'
     environment:
-      NODE_ENV: 'test'
+      NODE_ENV: 'production'
       PORT: '3000'
       GRAPHQL_PORT: '3000'
       JWT_ACCESSTOKEN_SECRET: 'VtWeuJo5cPrH1gzvLX0HwPkcbVVeMkV0/a2JFeP3hGE='
