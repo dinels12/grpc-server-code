@@ -1,150 +1,104 @@
-version: "3"
+version: '3'
 
 services:
-  # posts-svc:
-  #   image: "posts-svc:dev"
-  #   container_name: "posts-svc"
+  auth-svc:
+    image: 'auth-svc:dev'
+    container_name: 'auth-svc'
+    build:
+      context: './microservices/auth-svc'
+    ports:
+      - '50051:50051'
+    # expose:
+    # - "50051"
+    environment:
+      NODE_ENV: 'production'
+      GRPC_HOST: '0.0.0.0'
+      GRPC_PORT: '50051'
+      DB_HOST: 'micro-auth'
+    # healthcheck:
+    #   test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 5
+    restart: 'on-failure'
+
+  # product-svc:
+  #   image: "product-svc:dev"
+  #   container_name: "product-svc"
   #   build:
-  #     context: "./microservices/posts-svc"
+  #     context: "./microservices/product-svc"
   #   networks:
   #     - "frontend"
   #     - "backend"
-  #     - "postsdomain"
+  #     - "productdomain"
   #   expose:
-  #     - "50051"
-  #   depends_on:
-  #     - "posts-db"
-  #     - "cache"
+  #     - "50053"
   #   environment:
-  #     NODE_ENV: "test"
+  #     NODE_ENV: "production"
   #     GRPC_HOST: "0.0.0.0"
-  #     GRPC_PORT: "50051"
-  #     DB_HOST: "posts-db"
-  #     DB_PORT: "5432"
-  #     DB_USERNAME: "postgres"
-  #     DB_PASSWORD: "postgres"
-  #     DB_DATABASE: "postgres"
-  #     DB_SCHEMA: "public"
-  #     DB_SYNC: true
-  #     REDIS_HOST: "cache"
-  #     REDIS_PORT: "6379"
-  #   healthcheck:
-  #     test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 5
+  #     GRPC_PORT: "50053"
+  #     DB_HOST: "micro-product"
+  #   # healthcheck:
+  #   #   test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
+  #   #   interval: 30s
+  #   #   timeout: 10s
+  #   #   retries: 5
   #   restart: "on-failure"
 
-  auth-svc:
-    image: "auth-svc:dev"
-    container_name: "auth-svc"
-    build:
-      context: "./microservices/auth-svc"
-    networks:
-      - "frontend"
-      - "backend"
-      - "authdomain"
-    expose:
-      - "50051"
-    environment:
-      NODE_ENV: "test"
-      GRPC_HOST: "0.0.0.0"
-      GRPC_PORT: "50051"
-      DB_HOST: "micro-auth"
-      DB_PORT: "5432"
-      DB_USERNAME: "postgres"
-      DB_PASSWORD: "postgres"
-      DB_DATABASE: "postgres"
-      DB_SCHEMA: "public"
-      REDIS_HOST: "cache"
-      REDIS_PORT: "6379"
-    healthcheck:
-      test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    restart: "on-failure"
-
-  # mailer-svc:
-  #   image: "mailer-svc:dev"
-  #   container_name: "mailer-svc"
+  # order-svc:
+  #   image: "order-svc:dev"
+  #   container_name: "order-svc"
   #   build:
-  #     context: "./microservices/mailer-svc"
+  #     context: "./microservices/order-svc"
   #   networks:
   #     - "frontend"
-  #     - "mailerdomain"
+  #     - "backend"
+  #     - "orderdomain"
   #   expose:
-  #     - "50051"
+  #     - "50052"
   #   environment:
-  #     NODE_ENV: "test"
+  #     NODE_ENV: "production"
   #     GRPC_HOST: "0.0.0.0"
-  #     GRPC_PORT: "50051"
-  #     SMTP_HOST: "smtp.gmail.com"
-  #     SMTP_PORT: "587"
-  #     SMTP_SECURE: "true"
-  #     SMTP_USER: "username@gmail.com"
-  #     SMTP_PASS: "password"
-  #   healthcheck:
-  #     test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 5
+  #     GRPC_PORT: "50052"
+  #     DB_HOST: "micro-order"
+  #   # healthcheck:
+  #   #   test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
+  #   #   interval: 30s
+  #   #   timeout: 10s
+  #   #   retries: 5
   #   restart: "on-failure"
 
   api-gateway:
-    image: "api-gateway:dev"
-    container_name: "api-gateway"
+    image: 'api-gateway:dev'
+    container_name: 'api-gateway'
     build:
-      context: "./api-gateway"
-    networks:
-      - "frontend"
+      context: './api-gateway'
     ports:
-      - "3000:3000"
+      - '3000:3000'
     depends_on:
-      # - "cache"
-      - "auth-svc"
+      - 'auth-svc'
+      # - "order-svc"
+      # - "product-svc"
     environment:
-      NODE_ENV: "test"
-      GRAPHQL_PORT: "3000"
-      JWT_ACCESSTOKEN_SECRET: "VtWeuJo5cPrH1gzvLX0HwPkcbVVeMkV0/a2JFeP3hGE="
-      JWT_REFRESHTOKEN_SECRET: "tPQz6vb7nJDilma85OQExilvgZX+QyEf1CL95DmfBLA="
-      JWT_ISSUER: "application"
-      JWT_AUDIENCE: "public"
-      AUTH_SVC_URL: "auth-svc:50051"
-      # USERS_SVC_URL: "users-svc:50051"
-    healthcheck:
-      test: ["CMD", "wget", "localhost:3000/healthz -q -O - > /dev/null 2>&1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    restart: "on-failure"
-
-  # comments-db:
-  #   image: "postgres:12-alpine"
-  #   container_name: "comments-db"
-  #   networks:
-  #     - "commentsdomain"
-  #   expose:
-  #     - "5432"
-  #   volumes:
-  #     - commentsdata:/var/lib/postgresql/data
-  #   environment:
-  #     POSTGRES_USER: "postgres"
-  #     POSTGRES_PASSWORD: "postgres"
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "sh -c 'pg_isready -U postgres'"]
-  #     interval: 30s
-  #     timeout: 30s
-  #     retries: 3
-  #   restart: "on-failure"
-
-
-networks:
-  frontend:
-  backend:
-  authdomain:
-
-volumes:
-  commentsdata:
-  postsdata:
-  usersdata:
+      NODE_ENV: 'test'
+      PORT: '3000'
+      GRAPHQL_PORT: '3000'
+      JWT_ACCESSTOKEN_SECRET: 'VtWeuJo5cPrH1gzvLX0HwPkcbVVeMkV0/a2JFeP3hGE='
+      JWT_REFRESHTOKEN_SECRET: 'tPQz6vb7nJDilma85OQExilvgZX+QyEf1CL95DmfBLA='
+      JWT_ISSUER: 'application'
+      JWT_AUDIENCE: 'public'
+      AUTH_SVC_URL: 'auth-svc:50051'
+      PRODUCT_SVC_URL: 'order-svc:50052'
+      ORDER_SVC_URL: 'product-svc:50053'
+    # healthcheck:
+    #   test: ["CMD", "wget", "localhost:3000/healthz -q -O - > /dev/null 2>&1"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 5
+    restart: 'on-failure'
+# networks:
+#   frontend:
+#   backend:
+#   authdomain:
+#   productdomain:
+#   orderdomain:

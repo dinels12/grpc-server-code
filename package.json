@@ -9,11 +9,13 @@
     "docs:proto-gen": "./scripts/generate-proto-docs.sh",
     "install": "./scripts/install.sh",
     "lint": "./scripts/lint.sh",
+    "prebuild": "./scripts/prebuild.sh",
     "build": "./scripts/build.sh",
     "docker:build": "docker-compose build",
     "docker:start": "docker-compose up",
     "docker:teardown": "docker-compose down",
-    "start": "npm run install && npm run build && npm run docker:build && npm run docker:start"
+    "start": "npm run install && npm run build && npm run docker:build && npm run docker:start",
+    "docker:unused": "docker rmi $(docker images -qf 'dangling=true')"
   },
   "keywords": [],
   "repository": {
