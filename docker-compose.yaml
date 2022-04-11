@@ -6,7 +6,6 @@ services:
     container_name: 'auth-svc'
     build:
       context: './microservices/auth-svc'
-    # - 50051:50051
     networks:
       - backend
     expose:
@@ -14,10 +13,12 @@ services:
     # ports:
     environment:
       NODE_ENV: 'production'
-      GRPC_HOST: '0.0.0.0'
-      GRPC_PORT: '50051'
-      DB_HOST: 'micro-auth'
-      DB_URL: 'mongodb+srv://admin:denialcode@cluster0.k21st.gcp.mongodb.net/micro-auth'
+      GRPC_URL: '0.0.0.0:50051'
+      DB_TYPE: 'mongodb+srv://'
+      DB_NAME: 'micro-auth'
+      DB_USERNAME: 'admin'
+      DB_PASSWORD: 'denialcode'
+      DB_CLUSTER: "@cluster0.k21st.gcp.mongodb.net"
     # healthcheck:
     #   test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
     #   interval: 30s
@@ -36,10 +37,14 @@ services:
       - 50052
     environment:
       NODE_ENV: 'production'
-      GRPC_HOST: '0.0.0.0'
-      GRPC_PORT: '50052'
-      DB_HOST: 'micro-order'
-      DB_URL: 'mongodb+srv://admin:denialcode@cluster0.k21st.gcp.mongodb.net/micro-order'
+      GRPC_URL: '0.0.0.0:50052'
+      DB_TYPE: 'mongodb+srv://'
+      DB_NAME: 'micro-order'
+      DB_USERNAME: 'admin'
+      DB_PASSWORD: 'denialcode'
+      DB_CLUSTER: "@cluster0.k21st.gcp.mongodb.net"
+      PRODUCT_SVC_URL: 'product-svc:50053'
+      
     # healthcheck:
     #   test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
     #   interval: 30s
@@ -58,18 +63,19 @@ services:
       - 50053
     environment:
       NODE_ENV: 'production'
-      GRPC_HOST: '0.0.0.0'
-      GRPC_PORT: '50053'
-      DB_HOST: 'micro-product'
-      DB_URL: 'mongodb+srv://admin:denialcode@cluster0.k21st.gcp.mongodb.net/micro-product'
+      GRPC_URL: '0.0.0.0:50053'
+      DB_TYPE: 'mongodb+srv://'
+      DB_NAME: 'micro-product'
+      DB_USERNAME: 'admin'
+      DB_PASSWORD: 'denialcode'
+      DB_CLUSTER: "@cluster0.k21st.gcp.mongodb.net"
+      
     # healthcheck:
     #   test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
     #   interval: 30s
     #   timeout: 10s
     #   retries: 5
     restart: 'on-failure'
-
-  
 
   api-gateway:
     image: 'api-gateway:dev'
@@ -83,8 +89,8 @@ services:
       - 3000:3000
     depends_on:
       - 'auth-svc'
-      - 'order-svc'
       - 'product-svc'
+      - 'order-svc'
     environment:
       NODE_ENV: 'test'
       PORT: '3000'
@@ -94,25 +100,14 @@ services:
       JWT_ISSUER: 'application'
       JWT_AUDIENCE: 'public'
       AUTH_SVC_URL: 'auth-svc:50051'
-      PRODUCT_SVC_URL: 'order-svc:50052'
-      ORDER_SVC_URL: 'product-svc:50053'
+      ORDER_SVC_URL: 'order-svc:50052'
+      PRODUCT_SVC_URL: 'product-svc:50053'
     # healthcheck:
     #   test: ["CMD", "wget", "localhost:3000/healthz -q -O - > /dev/null 2>&1"]
     #   interval: 30s
     #   timeout: 10s
     #   retries: 5
     restart: 'on-failure'
-
-# networks:
-#   frontend:
-#   backend:
-#   authdomain:
-#   productdomain:
-#   orderdomain:
-# networks:
-#   default:
-#     external:
-#       name: test
 
 networks:
   api-gateway: {}
