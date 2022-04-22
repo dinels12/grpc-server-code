@@ -2,11 +2,11 @@ version: '3'
 
 services:
   auth-svc:
-    image: 'auth-svc:dev'
+    image: 'auth-svc:prod'
     container_name: 'auth-svc'
     build:
       context: './microservices/auth-svc'
-      target: development
+      target: production
     networks:
       - backend
     expose:
@@ -28,11 +28,11 @@ services:
     restart: 'on-failure'
 
   order-svc:
-    image: 'order-svc:dev'
+    image: 'order-svc:prod'
     container_name: 'order-svc'
     build:
       context: './microservices/order-svc'
-      target: development
+      target: production
     networks:
       - backend
     expose:
@@ -55,11 +55,11 @@ services:
     restart: 'on-failure'
 
   product-svc:
-    image: 'product-svc:dev'
+    image: 'product-svc:prod'
     container_name: 'product-svc'
     build:
       context: './microservices/product-svc'
-      target: development
+      target: production
     networks:
       - backend
     expose:
@@ -81,11 +81,11 @@ services:
     restart: 'on-failure'
 
   api-gateway:
-    image: 'api-gateway:dev'
+    image: 'api-gateway:prod'
     container_name: 'api-gateway'
     build:
       context: './api-gateway'
-      target: development
+      target: production
     networks:
       - api-gateway
       - backend
